@@ -57,6 +57,49 @@ class Simulator(HabitatSim):
     """
 
     def __init__(self, config: Config) -> None:
+        # Compatibility shim for habitat-lab 0.1.7 + habitat-sim 0.2.1:
+        # drop newer AGENT_0 physics keys that old Habitat-Lab tries to map
+        # into AgentConfiguration but are unsupported in this stack.
+        incompatible_agent_keys = [
+            "MASS",
+            "LINEAR_ACCELERATION",
+            "ANGULAR_ACCELERATION",
+            "LINEAR_FRICTION",
+            "ANGULAR_FRICTION",
+            "COEFFICIENT_OF_RESTITUTION",
+        ]
+        agent_cfg = getattr(config, "AGENT_0", None)
+        if agent_cfg is not None:
+            try:
+                was_frozen = config.is_frozen()
+            except Exception:
+                was_frozen = False
+
+            try:
+                config.defrost()
+            except Exception:
+                pass
+
+            for key in incompatible_agent_keys:
+                removed = False
+                try:
+                    if hasattr(config.AGENT_0, key):
+                        delattr(config.AGENT_0, key)
+                        removed = True
+                except Exception:
+                    pass
+                if not removed:
+                    try:
+                        del config.AGENT_0[key]
+                    except Exception:
+                        pass
+
+            if was_frozen:
+                try:
+                    config.freeze()
+                except Exception:
+                    pass
+
         super().__init__(config)
 
     def step_without_obs(self,
