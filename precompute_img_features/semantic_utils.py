@@ -86,10 +86,10 @@ def convert_mpcat40_to_12cat(im):
                 new_im[im == u] = mpcat40_to_12cat[u] + 1
         return new_im
     elif isinstance(im, np.ndarray):
-        im = im.astype(np.int)
-        new_im = np.zeros(im.shape, dtype=np.int)
+        im = im.astype(int)
+        new_im = np.zeros(im.shape, dtype=int)
         unique = np.unique(im)
-        unique = unique.astype(np.int)
+        unique = unique.astype(int)
         for u in unique:
             if u in mpcat40_to_12cat:
                 new_im[im == u] = mpcat40_to_12cat[u] + 1

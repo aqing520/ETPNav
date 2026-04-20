@@ -17,3 +17,9 @@ __pycache__/
 /interact
 /pretrain_src/datasets
 /pretrain_src/img_features
+
+/local_weights
+/local_logs
+/local_datasets
+/local_pretrain_src/datasets
+/local_pretrain_src/img_features    
